@@ -1,0 +1,801 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Patient Dashboard</title>
+  <style>
+    :root {
+      --primary: #2563eb;
+      --primary-light: #dbeafe;
+      --secondary: #10b981;
+      --danger: #ef4444;
+      --warning: #f59e0b;
+      --dark: #1e293b;
+      --light: #f8fafc;
+      --gray: #64748b;
+      --border: #e2e8f0;
+      --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f1f5f9;
+      color: var(--dark);
+      line-height: 1.6;
+    }
+    
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 0;
+      margin-bottom: 30px;
+      border-bottom: 1px solid var(--border);
+    }
+    
+    .welcome-section h1 {
+      font-size: 28px;
+      color: var(--dark);
+      margin-bottom: 5px;
+    }
+    
+    .welcome-section p {
+      color: var(--gray);
+      font-size: 16px;
+    }
+    
+    .btn {
+      padding: 10px 20px;
+      border-radius: 8px;
+      border: none;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .btn-primary {
+      background-color: var(--primary);
+      color: white;
+    }
+    
+    .btn-primary:hover {
+      background-color: #1d4ed8;
+    }
+    
+    .btn-outline {
+      background-color: transparent;
+      color: var(--primary);
+      border: 1px solid var(--primary);
+    }
+    
+    .btn-outline:hover {
+      background-color: var(--primary-light);
+    }
+    
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+    
+    @media (max-width: 768px) {
+      .dashboard-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+    
+    .card {
+      background: white;
+      border-radius: 12px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+    
+    .card-header {
+      padding: 20px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .card-header h2 {
+      font-size: 20px;
+      color: var(--dark);
+    }
+    
+    .card-body {
+      padding: 20px;
+    }
+    
+    .doctor {
+      display: flex;
+      align-items: center;
+      padding: 16px;
+      border-bottom: 1px solid var(--border);
+      transition: background-color 0.2s;
+    }
+    
+    .doctor:hover {
+      background-color: var(--light);
+    }
+    
+    .doctor:last-child {
+      border-bottom: none;
+    }
+    
+    .doctor-img {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin-right: 16px;
+      border: 2px solid var(--border);
+    }
+    
+    .doctor-details {
+      flex: 1;
+    }
+    
+    .doctor-name {
+      font-weight: 600;
+      font-size: 16px;
+      margin-bottom: 4px;
+    }
+    
+    .doctor-specialty {
+      color: var(--primary);
+      font-size: 14px;
+      margin-bottom: 4px;
+    }
+    
+    .doctor-qualifications {
+      color: var(--gray);
+      font-size: 13px;
+    }
+    
+    .booking {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px;
+      border-bottom: 1px solid var(--border);
+    }
+    
+    .booking:last-child {
+      border-bottom: none;
+    }
+    
+    .booking-details {
+      display: flex;
+      align-items: center;
+    }
+    
+    .booking-doctor-img {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin-right: 16px;
+    }
+    
+    .booking-info {
+      flex: 1;
+    }
+    
+    .booking-doctor-name {
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+    
+    .booking-date {
+      color: var(--gray);
+      font-size: 14px;
+    }
+    
+    .status {
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+    
+    .status-waiting {
+      background-color: #fef3c7;
+      color: var(--warning);
+    }
+    
+    .status-accepted {
+      background-color: #d1fae5;
+      color: var(--secondary);
+    }
+    
+    .status-rejected {
+      background-color: #fee2e2;
+      color: var(--danger);
+    }
+    
+    .status-cancelled {
+      background-color: #fecdd3;
+      color: #be123c;
+    }
+    
+    .empty-state {
+      text-align: center;
+      padding: 40px 20px;
+      color: var(--gray);
+    }
+    
+    .empty-state img {
+      width: 120px;
+      margin-bottom: 16px;
+      opacity: 0.6;
+    }
+    
+    .empty-state p {
+      margin-bottom: 16px;
+    }
+    
+    .notification {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      padding: 16px 20px;
+      border-radius: 8px;
+      background-color: white;
+      box-shadow: var(--shadow);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      transform: translateX(150%);
+      transition: transform 0.3s ease;
+      z-index: 1000;
+    }
+    
+    .notification.show {
+      transform: translateX(0);
+    }
+    
+    .notification-success {
+      border-left: 4px solid var(--secondary);
+    }
+    
+    .notification-error {
+      border-left: 4px solid var(--danger);
+    }
+    
+    .notification-icon {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: bold;
+    }
+    
+    .success-icon {
+      background-color: var(--secondary);
+    }
+    
+    .error-icon {
+      background-color: var(--danger);
+    }
+    
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      z-index: 2000;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .modal.show {
+      display: flex;
+    }
+    
+    .modal-content {
+      background-color: white;
+      border-radius: 12px;
+      width: 90%;
+      max-width: 500px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+      overflow: hidden;
+    }
+    
+    .modal-header {
+      padding: 20px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .modal-header h3 {
+      font-size: 20px;
+    }
+    
+    .close-modal {
+      background: none;
+      border: none;
+      font-size: 24px;
+      cursor: pointer;
+      color: var(--gray);
+    }
+    
+    .modal-body {
+      padding: 20px;
+    }
+    
+    .form-group {
+      margin-bottom: 20px;
+    }
+    
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 500;
+    }
+    
+    .form-control {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 16px;
+    }
+    
+    .form-control:focus {
+      outline: none;
+      border-color: var(--primary);
+    }
+    
+    .modal-footer {
+      padding: 20px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: flex-end;
+      gap: 12px;
+    }
+
+    .login-prompt {
+      background-color: var(--primary-light);
+      border: 1px solid var(--primary);
+      border-radius: 8px;
+      padding: 15px;
+      margin-top: 20px;
+      text-align: center;
+    }
+
+    .login-prompt p {
+      margin-bottom: 10px;
+      color: var(--dark);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="welcome-section">
+        <h1>Welcome, Patient</h1>
+        <p>Manage your appointments and find doctors</p>
+      </div>
+      <button class="btn btn-outline" onclick="logout()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+          <path d="M10 12.5a.5.5 0 0 1-.5.5h-8a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v2a.5.5 0 0 0 1 0v-2A1.5 1.5 0 0 0 9.5 2h-8A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h8a1.5 1.5 0 0 0 1.5-1.5v-2a.5.5 0 0 0-1 0v2z"/>
+          <path d="M15.854 8.354a.5.5 0 0 0 0-.708l-3-3a.5.5 0 0 0-.708.708L14.293 7.5H5.5a.5.5 0 0 0 0 1h8.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3z"/>
+        </svg>
+        Logout
+      </button>
+    </header>
+    
+    <div class="dashboard-grid">
+      <div class="card">
+        <div class="card-header">
+          <h2>Available Doctors</h2>
+          <button class="btn btn-primary" onclick="refreshDoctors()">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+              <path d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2v1z"/>
+              <path d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466z"/>
+            </svg>
+            Refresh
+          </button>
+        </div>
+        <div class="card-body" id="doctorList">
+          <!-- Doctors will be loaded here -->
+        </div>
+      </div>
+      
+      <div class="card">
+        <div class="card-header">
+          <h2>Your Appointments</h2>
+          <span id="appointmentCount" class="status status-waiting">0</span>
+        </div>
+        <div class="card-body" id="myBookings">
+          <!-- Bookings will be loaded here -->
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Notification -->
+  <div class="notification" id="notification">
+    <div class="notification-icon success-icon" id="notificationIcon">✓</div>
+    <div id="notificationMessage">Booking requested!</div>
+  </div>
+  
+  <!-- Booking Modal -->
+  <div class="modal" id="bookingModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Book Appointment</h3>
+        <button class="close-modal" onclick="closeBookingModal()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label for="doctorName">Doctor</label>
+          <input type="text" id="doctorName" class="form-control" readonly>
+        </div>
+        <div class="form-group">
+          <label for="appointmentDate">Preferred Date</label>
+          <input type="date" id="appointmentDate" class="form-control">
+        </div>
+        <div class="form-group">
+          <label for="appointmentTime">Preferred Time</label>
+          <input type="time" id="appointmentTime" class="form-control">
+        </div>
+        <div class="form-group">
+          <label for="symptoms">Symptoms/Reason for Visit</label>
+          <textarea id="symptoms" class="form-control" rows="3" placeholder="Describe your symptoms or reason for the appointment"></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline" onclick="closeBookingModal()">Cancel</button>
+        <button class="btn btn-primary" onclick="confirmBooking()">Confirm Booking</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ------------------------
+    // Local storage helper functions
+    // ------------------------
+    function getDoctors() { 
+      return JSON.parse(localStorage.getItem("doctors") || "[]"); 
+    }
+    
+    function getBookings() { 
+      return JSON.parse(localStorage.getItem("bookings") || "[]"); 
+    }
+    
+    function saveBookings(bks) { 
+      localStorage.setItem("bookings", JSON.stringify(bks)); 
+    }
+    
+    // ------------------------
+    // Helper function to get doctor image by name
+    // ------------------------
+    function getDoctorImage(doctorName) {
+      const doctors = getDoctors();
+      const doctor = doctors.find(d => d.name === doctorName);
+      return doctor ? doctor.image : 'https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?ixlib=rb-1.2.1&auto=format&fit=crop&w=100&h=100&q=80';
+    }
+    
+    // ------------------------
+    // Check if user is logged in
+    // ------------------------
+    function isLoggedIn() {
+      return !!sessionStorage.getItem("patientId");
+    }
+    
+    // ------------------------
+    // Render doctors list
+    // ------------------------
+    function renderDoctors() {
+      const doctors = getDoctors();
+      const list = document.getElementById("doctorList");
+      
+      if (doctors.length === 0) {
+        list.innerHTML = `
+          <div class="empty-state">
+            <img src="https://cdn-icons-png.flaticon.com/512/2038/2038791.png" alt="No doctors">
+            <p>No doctors available at the moment.</p>
+            <p>Please check back later or try refreshing the list.</p>
+          </div>
+        `;
+        return;
+      }
+
+      list.innerHTML = doctors.map(d => `
+        <div class="doctor">
+          <img src="${d.image || 'https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?ixlib=rb-1.2.1&auto=format&fit=crop&w=100&h=100&q=80'}" 
+               alt="Doctor ${d.name}" class="doctor-img">
+          <div class="doctor-details">
+            <div class="doctor-name">Dr. ${d.name}</div>
+            <div class="doctor-specialty">${d.specialization}</div>
+            <div class="doctor-qualifications">${d.qualifications}</div>
+          </div>
+          <button class="btn btn-primary" onclick="openBookingModal('${d.name}')">Book</button>
+        </div>
+      `).join("");
+      
+      // Show login prompt if user is not logged in
+      if (!isLoggedIn()) {
+        list.innerHTML += `
+          <div class="login-prompt">
+            <p><strong>Want to book an appointment?</strong></p>
+            <p>You need to log in or register first to book appointments.</p>
+            <button class="btn btn-primary" onclick="goToRegister()">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0zm4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4zm-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664h10z"/>
+              </svg>
+              Login / Register
+            </button>
+          </div>
+        `;
+      }
+    }
+    
+    // ------------------------
+    // Render user's bookings
+    // ------------------------
+    function renderBookings() {
+      const patient = sessionStorage.getItem("patientId");
+      const myDiv = document.getElementById("myBookings");
+      const countSpan = document.getElementById("appointmentCount");
+      const bookings = getBookings();
+
+      // Hide appointments section if user is not logged in
+      if (!isLoggedIn()) {
+        myDiv.innerHTML = `
+          <div class="empty-state">
+            <img src="https://cdn-icons-png.flaticon.com/512/3767/3767084.png" alt="No bookings">
+            <p>Please log in to view your appointments.</p>
+            <button class="btn btn-primary" onclick="goToRegister()">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0zm4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4zm-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664h10z"/>
+              </svg>
+              Login / Register
+            </button>
+          </div>
+        `;
+        countSpan.textContent = "0";
+        return;
+      }
+
+      const myBooks = bookings.filter(b => b.patient === patient);
+      
+      if (myBooks.length === 0) {
+        myDiv.innerHTML = `
+          <div class="empty-state">
+            <img src="https://cdn-icons-png.flaticon.com/512/3767/3767084.png" alt="No bookings">
+            <p>You don't have any appointments yet.</p>
+            <p>Book your first appointment with a doctor.</p>
+          </div>
+        `;
+        countSpan.textContent = "0";
+        return;
+      }
+
+      // Update appointment count
+      countSpan.textContent = myBooks.length;
+      
+      myDiv.innerHTML = myBooks.map(b => {
+        let statusClass;
+        switch(b.status){
+          case "Waiting": statusClass = "status-waiting"; break;
+          case "Accepted": statusClass = "status-accepted"; break;
+          case "Rejected": statusClass = "status-rejected"; break;
+          case "Cancelled": statusClass = "status-cancelled"; break;
+          default: statusClass = "";
+        }
+        
+        // Get the correct doctor image for this booking
+        const doctorImage = getDoctorImage(b.doctor);
+        
+        return `
+          <div class="booking">
+            <div class="booking-details">
+              <img src="${doctorImage}" 
+                   alt="Doctor ${b.doctor}" class="booking-doctor-img">
+              <div class="booking-info">
+                <div class="booking-doctor-name">Dr. ${b.doctor}</div>
+                <div class="booking-date">${b.date || 'Date not specified'}</div>
+              </div>
+            </div>
+            <span class="status ${statusClass}">${b.status}</span>
+          </div>
+        `;
+      }).join("");
+    }
+    
+    // ------------------------
+    // Booking functionality
+    // ------------------------
+    let selectedDoctor = "";
+    
+    function openBookingModal(doctorName) {
+      // Check if user is logged in
+      if (!isLoggedIn()) {
+        showNotification("You must log in first to book an appointment!", "error");
+        // Redirect to register page immediately
+        setTimeout(() => {
+          window.location.href = "register.html";
+        }, 1500);
+        return;
+      }
+      
+      selectedDoctor = doctorName;
+      document.getElementById("doctorName").value = "Dr. " + doctorName;
+      
+      // Set default date to tomorrow
+      const tomorrow = new Date();
+      tomorrow.setDate(tomorrow.getDate() + 1);
+      document.getElementById("appointmentDate").value = tomorrow.toISOString().split('T')[0];
+      
+      // Set default time to 10:00 AM
+      document.getElementById("appointmentTime").value = "10:00";
+      
+      document.getElementById("bookingModal").classList.add("show");
+    }
+    
+    function closeBookingModal() {
+      document.getElementById("bookingModal").classList.remove("show");
+      selectedDoctor = "";
+    }
+    
+    function confirmBooking() {
+      const patient = sessionStorage.getItem("patientId");
+      const date = document.getElementById("appointmentDate").value;
+      const time = document.getElementById("appointmentTime").value;
+      const symptoms = document.getElementById("symptoms").value;
+      
+      if (!date || !time) {
+        showNotification("Please select both date and time", "error");
+        return;
+      }
+      
+      let bookings = getBookings();
+      bookings.push({
+        patient, 
+        doctor: selectedDoctor, 
+        status: "Waiting",
+        date: `${date} at ${time}`,
+        symptoms
+      });
+      
+      saveBookings(bookings);
+      closeBookingModal();
+      showNotification(`Appointment requested with Dr. ${selectedDoctor}`, "success");
+      renderBookings();
+    }
+    
+    // ------------------------
+    // Go to register page
+    // ------------------------
+    function goToRegister() {
+      window.location.href = "register.html";
+    }
+    
+    // ------------------------
+    // Notification system
+    // ------------------------
+    function showNotification(message, type) {
+      const notification = document.getElementById("notification");
+      const icon = document.getElementById("notificationIcon");
+      const messageEl = document.getElementById("notificationMessage");
+      
+      messageEl.textContent = message;
+      
+      // Reset classes
+      notification.className = "notification";
+      icon.className = "notification-icon";
+      
+      if (type === "success") {
+        notification.classList.add("notification-success");
+        icon.classList.add("success-icon");
+        icon.textContent = "✓";
+      } else {
+        notification.classList.add("notification-error");
+        icon.classList.add("error-icon");
+        icon.textContent = "!";
+      }
+      
+      notification.classList.add("show");
+      
+      setTimeout(() => {
+        notification.classList.remove("show");
+      }, 3000);
+    }
+    
+    // ------------------------
+    // Refresh doctors
+    // ------------------------
+    function refreshDoctors() {
+      renderDoctors();
+      showNotification("Doctor list refreshed", "success");
+    }
+    
+    // ------------------------
+    // Logout function
+    // ------------------------
+    function logout() {
+      sessionStorage.clear();
+      window.location.href = "index.html";
+    }
+    
+    // ------------------------
+    // Initialize dashboard
+    // ------------------------
+    function initDashboard() {
+      // Update header based on login status
+      const patient = sessionStorage.getItem("patientId");
+      if (!patient) {
+        document.querySelector('.welcome-section h1').textContent = "Find Doctors";
+        document.querySelector('.welcome-section p').textContent = "Browse available doctors and book appointments";
+        document.querySelector('header button').innerHTML = `
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+            <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0zm4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4zm-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664h10z"/>
+          </svg>
+          Login
+        `;
+        document.querySelector('header button').onclick = goToRegister;
+      }
+      
+      // If no doctors in storage, add some sample data
+      if (getDoctors().length === 0) {
+        const sampleDoctors = [
+          {
+            name: "Sarah Johnson",
+            specialization: "Cardiology",
+            qualifications: "MD, Cardiology Specialist",
+            image: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?ixlib=rb-1.2.1&auto=format&fit=crop&w=100&h=100&q=80"
+          },
+          {
+            name: "Michael Chen",
+            specialization: "Pediatrics",
+            qualifications: "MD, Pediatric Specialist",
+            image: "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?ixlib=rb-1.2.1&auto=format&fit=crop&w=100&h=100&q=80"
+          },
+          {
+            name: "Emily Rodriguez",
+            specialization: "Dermatology",
+            qualifications: "MD, Dermatology Specialist",
+            image: "https://images.unsplash.com/photo-1594824947933-d0501ba2fe65?ixlib=rb-1.2.1&auto=format&fit=crop&w=100&h=100&q=80"
+          }
+        ];
+        localStorage.setItem("doctors", JSON.stringify(sampleDoctors));
+      }
+      
+      renderDoctors();
+      renderBookings();
+    }
+    
+    // Initialize the dashboard when page loads
+    document.addEventListener('DOMContentLoaded', initDashboard);
+  </script>
+</body>
+</html>

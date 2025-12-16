@@ -1,0 +1,431 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Hospital Management System</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+:root {
+  --primary: #2563eb;
+  --primary-dark: #1e40af;
+  --dark: #1e293b;
+  --light: #f8fafc;
+  --gray: #64748b;
+  --border: #e2e8f0;
+  --radius: 12px;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+  background-color: #b3d9ff; /* Light blue background */
+  color: var(--dark);
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.container {
+  width: 100%;
+  max-width: 450px;
+  margin: 0 auto;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 15px;
+}
+
+.logo-icon {
+  width: 50px;
+  height: 50px;
+  background: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--primary);
+  font-size: 24px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.header h1 {
+  font-size: 28px;
+  color: var(--primary-dark);
+  margin-bottom: 8px;
+  font-weight: 600;
+}
+
+.header p {
+  color: var(--dark);
+  font-size: 16px;
+}
+
+.card {
+  background: white;
+  padding: 30px;
+  border-radius: var(--radius);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+  position: relative;
+}
+
+.form-group {
+  margin-bottom: 20px;
+  position: relative;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 500;
+  color: var(--dark);
+  font-size: 14px;
+}
+
+.input-with-icon {
+  position: relative;
+}
+
+.input-with-icon i {
+  position: absolute;
+  left: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--gray);
+}
+
+.input-with-icon input,
+.input-with-icon select {
+  padding-left: 45px;
+}
+
+input, select {
+  padding: 14px 16px;
+  width: 100%;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  font-size: 16px;
+  background-color: white;
+}
+
+input:focus, select:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.btn {
+  padding: 14px 16px;
+  border: none;
+  border-radius: 8px;
+  background: var(--primary);
+  color: white;
+  cursor: pointer;
+  width: 100%;
+  margin-top: 10px;
+  font-size: 16px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: background 0.3s;
+}
+
+.btn:hover {
+  background: var(--primary-dark);
+}
+
+.links {
+  margin-top: 20px;
+  text-align: center;
+}
+
+.links a {
+  text-decoration: none;
+  color: var(--primary);
+  font-weight: 500;
+  display: inline-block;
+  margin: 0 10px;
+}
+
+.links a:hover {
+  color: var(--primary-dark);
+  text-decoration: underline;
+}
+
+.role-indicator {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 5px;
+  font-size: 14px;
+  color: var(--gray);
+}
+
+.role-indicator i {
+  color: var(--primary);
+}
+
+/* Password toggle */
+.password-toggle {
+  position: absolute;
+  right: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: var(--gray);
+  cursor: pointer;
+}
+
+.password-toggle:hover {
+  color: var(--dark);
+}
+
+/* Notification styles */
+.notification {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  padding: 15px 20px;
+  border-radius: 8px;
+  background: white;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  max-width: 350px;
+  z-index: 1000;
+  transform: translateX(400px);
+  transition: transform 0.3s ease;
+  border-left: 4px solid var(--primary);
+}
+
+.notification.show {
+  transform: translateX(0);
+}
+
+.notification.success {
+  border-left-color: #10b981;
+}
+
+.notification.error {
+  border-left-color: #ef4444;
+}
+
+.notification i {
+  font-size: 18px;
+}
+
+.notification.success i {
+  color: #10b981;
+}
+
+.notification.error i {
+  color: #ef4444;
+}
+
+.notification-close {
+  margin-left: auto;
+  background: none;
+  border: none;
+  color: var(--gray);
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.notification-close:hover {
+  color: var(--dark);
+}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <div class="logo">
+      <div class="logo-icon">
+        <i class="fas fa-hospital"></i>
+      </div>
+    </div>
+    <h1>Hospital Management System</h1>
+    <p>Sign in to access your account</p>
+  </div>
+
+  <div class="card">
+    <form id="loginForm">
+      <div class="form-group">
+        <label for="username">Username / Patient ID</label>
+        <div class="input-with-icon">
+          <i class="fas fa-user"></i>
+          <input type="text" id="username" placeholder="Enter your username or patient ID" required>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="password">Password</label>
+        <div class="input-with-icon">
+          <i class="fas fa-lock"></i>
+          <input type="password" id="password" placeholder="Enter your password" required>
+          <button type="button" class="password-toggle" id="passwordToggle">
+            <i class="fas fa-eye"></i>
+          </button>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="loginType">Login As</label>
+        <div class="input-with-icon">
+          <i class="fas fa-user-tag"></i>
+          <select id="loginType">
+            <option value="patient">Patient</option>
+            <option value="admin">Administrator</option>
+          </select>
+        </div>
+        <div class="role-indicator">
+          <i class="fas fa-info-circle"></i>
+          <span id="roleDescription">Access your medical records and appointments</span>
+        </div>
+      </div>
+
+      <button type="submit" class="btn" id="loginBtn">
+        <i class="fas fa-sign-in-alt"></i>
+        Sign In
+      </button>
+
+      <div class="links">
+        <a href="register.html">New user? Register here</a>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Notification element -->
+<div id="notification" class="notification">
+  <i class="fas fa-info-circle"></i>
+  <span id="notificationText">Notification message</span>
+  <button class="notification-close" id="notificationClose">
+    <i class="fas fa-times"></i>
+  </button>
+</div>
+
+<script>
+// Initialize localStorage if empty
+if(!localStorage.getItem("patients")) {
+  localStorage.setItem("patients", JSON.stringify([]));
+}
+if(!localStorage.getItem("doctors")) localStorage.setItem("doctors", JSON.stringify([]));
+if(!localStorage.getItem("bookings")) localStorage.setItem("bookings", JSON.stringify([]));
+
+// Admin credentials
+const admin = {username:"admin", password:"1234"};
+
+// DOM elements
+const loginForm = document.getElementById('loginForm');
+const usernameInput = document.getElementById('username');
+const passwordInput = document.getElementById('password');
+const loginTypeSelect = document.getElementById('loginType');
+const roleDescription = document.getElementById('roleDescription');
+const loginBtn = document.getElementById('loginBtn');
+const passwordToggle = document.getElementById('passwordToggle');
+const notification = document.getElementById('notification');
+const notificationText = document.getElementById('notificationText');
+const notificationClose = document.getElementById('notificationClose');
+
+// Update role description
+loginTypeSelect.addEventListener('change', function() {
+  if (this.value === 'admin') {
+    roleDescription.textContent = 'Manage hospital system and patient records';
+  } else {
+    roleDescription.textContent = 'Access your medical records and appointments';
+  }
+});
+
+// Toggle password visibility
+passwordToggle.addEventListener('click', function() {
+  const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+  passwordInput.setAttribute('type', type);
+  this.innerHTML = type === 'password' ? '<i class="fas fa-eye"></i>' : '<i class="fas fa-eye-slash"></i>';
+});
+
+// Handle form submission
+loginForm.addEventListener('submit', function(e) {
+  e.preventDefault();
+  login();
+});
+
+// Show notification function
+function showNotification(message, type = 'info') {
+  notificationText.textContent = message;
+  notification.className = 'notification';
+  notification.classList.add(type);
+  notification.classList.add('show');
+  
+  // Auto-hide after 5 seconds
+  setTimeout(() => {
+    notification.classList.remove('show');
+  }, 5000);
+}
+
+// Close notification
+notificationClose.addEventListener('click', function() {
+  notification.classList.remove('show');
+});
+
+// Login function
+function login() {
+  const user = usernameInput.value.trim();
+  const pass = passwordInput.value.trim();
+  const type = loginTypeSelect.value;
+
+  if(!user || !pass){
+    showNotification("Please enter username and password.", "error");
+    return;
+  }
+
+  if(type === "admin"){
+    if(user === admin.username && pass === admin.password){
+      sessionStorage.setItem("role", "admin");
+      sessionStorage.setItem("adminUser", user);
+      showNotification("Admin login successful! Redirecting...", "success");
+      setTimeout(() => {
+        window.location.href = "admin.html";
+      }, 1500);
+    } else {
+      showNotification("Invalid admin credentials.", "error");
+    }
+  } else {
+    const patients = JSON.parse(localStorage.getItem("patients"));
+    const patient = patients.find(p => p.id === user && p.password === pass);
+    if(patient){
+      sessionStorage.setItem("role", "patient");
+      sessionStorage.setItem("patientId", user);
+      sessionStorage.setItem("patientName", patient.name);
+      showNotification(`Welcome back, ${patient.name}! Redirecting...`, "success");
+      setTimeout(() => {
+        window.location.href = "patient.html";
+      }, 1500);
+    } else {
+      showNotification("Invalid Patient ID or password. Please register first.", "error");
+    }
+  }
+}
+</script>
+</body>
+</html>
